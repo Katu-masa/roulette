@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ルーレット</title>
+    <style>
+        #roulette {
+            width: 300px;
+            height: 300px;
+            border: 10px solid #000;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+        }
+        .slice {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            background-color: red;
+            transform-origin: 100% 100%;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>ルーレット</h1>
+    <div id="roulette"></div>
+    <button id="spinButton">回す</button>
+    <div class="result" id="result"></div>
+
+    <script>
+        let rouletteData = [];
+        let totalSlices = 0;
+
+        // CSVを読み込む関数
+        function loadCSV(callback) {
+            fetch('data.csv')
+                .then(response => response.text())
+                .then(data => {
+                    const rows = data.split('\n').slice(1); // ヘッダーを除く
+                    rows.forEach(row => {
+                        const [number, color] = row.split(',');
+                        if (number && color) {
+                            rouletteData.push({ number: number.trim(), color: color.trim() });
+                        }
+                    });
+                    totalSlices = rouletteData.length;
+                    drawRoulette();
+                    callback();
+                });
+        }
+
+        // ルーレットを描画する関数
+        function drawRoulette() {
+            const roulette = document.getElementById('roulette');
+            roulette.innerHTML = '';
+            rouletteData.forEach((data, index) => {
+                const slice = document.createElement('div');
+                slice.className = 'slice';
+                slice.style.backgroundColor = data.color;
+                slice.style.transform = `rotate(${(360 / totalSlices) * index}deg)`;
+                roulette.appendChild(slice);
+            });
+        }
+
+        // 回転する関数
+        function spinRoulette() {
+            const randomIndex = Math.floor(Math.random() * totalSlices);
+            const resultData = rouletteData[randomIndex];
+            const result = document.getElementById('result');
+            result.textContent = `結果: ${resultData.number} (${resultData.color})`;
+
+            const roulette = document.getElementById('roulette');
+            const spinAngle = 360 * 5 + (randomIndex * (360 / totalSlices)); // 5回転してからの位置
+            roulette.style.transition = 'transform 4s ease-out';
+            roulette.style.transform = `rotate(${spinAngle}deg)`;
+        }
+
+        // 初期化
+        document.getElementById('spinButton').addEventListener('click', spinRoulette);
+        loadCSV(() => console.log('CSV読み込み完了'));
+    </script>
+</body>
+</html>
