@@ -17,7 +17,7 @@ $(function () {
 
     // CSVデータの読み込み
     function loadCSV() {
-        $.get("names.csv", function (data) {
+        $.get("date.csv", function (data) {
             let lines = data.split("\n");
             for (let line of lines) {
                 let [num, name] = line.split(",");
