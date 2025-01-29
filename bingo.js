@@ -8,27 +8,32 @@ $(function () {
         random,
         number,
         result,
-        nameList = {}, // CSVから取得した名前リスト
+        nameData = {},
         $number = $("#number"),
         $result = $("#result"),
         $nameDisplay = $("#name-display"),
         $sound_play = $("#sound-play"),
         $sound_pause = $("#sound-pause");
 
-    // CSVデータを読み込む
+    // CSVデータの読み込み
     function loadCSV() {
         $.get("names.csv", function (data) {
-            var lines = data.split("\n");
-            lines.forEach(function (line) {
-                var parts = line.split(",");
-                if (parts.length === 2) {
-                    nameList[parseInt(parts[0], 10)] = parts[1].trim();
+            let lines = data.split("\n");
+            for (let line of lines) {
+                let [num, name] = line.split(",");
+                if (num && name) {
+                    nameData[parseInt(num, 10)] = name.trim();
                 }
-            });
+            }
         });
     }
 
-    loadCSV();
+    // スタート画面の処理
+    $("#start-button").on("click", function () {
+        $("#start-screen").hide();
+        $("#game-screen").show();
+        loadCSV();
+    });
 
     for (var i = 1; i <= max; i++) {
         bingo.push(i);
@@ -47,8 +52,7 @@ $(function () {
                 random = Math.floor(Math.random() * bingo.length);
                 number = bingo[random];
                 $result.text(number);
-                $nameDisplay.text(nameList[number] || "該当なし")
-                           .toggleClass("empty", !nameList[number]);
+                $nameDisplay.text(nameData[number] || "該当なし");
             }, 10);
         } else {
             status = true;
@@ -63,8 +67,7 @@ $(function () {
             bingo.splice(random, 1);
 
             $result.text(result);
-            $nameDisplay.text(nameList[result] || "該当なし")
-                       .toggleClass("empty", !nameList[result]);
+            $nameDisplay.text(nameData[result] || "該当なし");
             $number.find("li").eq(parseInt(result, 10) - 1).addClass("hit");
         }
     });
