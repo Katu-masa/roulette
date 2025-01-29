@@ -8,44 +8,27 @@ $(function () {
         random,
         number,
         result,
-        nameData = {},
+        nameList = {}, // CSVから取得した名前リスト
         $number = $("#number"),
         $result = $("#result"),
         $nameDisplay = $("#name-display"),
         $sound_play = $("#sound-play"),
         $sound_pause = $("#sound-pause");
 
-    // CSVデータの読み込み（修正）
+    // CSVデータを読み込む
     function loadCSV() {
-        return $.ajax({
-            url: "data.csv",
-            dataType: "text"
-        }).done(function (data) {
-            console.log("CSVロード成功"); // デバッグログ
-            let lines = data.split("\n");
-            for (let line of lines) {
-                let [num, name] = line.split(",");
-                if (num && name) {
-                    num = parseInt(num.trim(), 10);
-                    nameData[num] = name.trim();
+        $.get("names.csv", function (data) {
+            var lines = data.split("\n");
+            lines.forEach(function (line) {
+                var parts = line.split(",");
+                if (parts.length === 2) {
+                    nameList[parseInt(parts[0], 10)] = parts[1].trim();
                 }
-            }
-            console.log("読み込んだデータ:", nameData); // デバッグログ
-        }).fail(function () {
-            console.error("CSVの読み込みに失敗しました"); // エラーハンドリング
+            });
         });
     }
 
-    // スタート画面の処理
-    $("#start-button").on("click", function () {
-        $("#start-screen").hide();
-        $("#game-screen").show();
-        
-        // CSVのロードが終わるまで待つ
-        loadCSV().then(function () {
-            console.log("ゲーム開始可能"); // デバッグログ
-        });
-    });
+    loadCSV();
 
     for (var i = 1; i <= max; i++) {
         bingo.push(i);
@@ -64,7 +47,8 @@ $(function () {
                 random = Math.floor(Math.random() * bingo.length);
                 number = bingo[random];
                 $result.text(number);
-                $nameDisplay.text(nameData[number] || "該当なし");
+                $nameDisplay.text(nameList[number] || "該当なし")
+                           .toggleClass("empty", !nameList[number]);
             }, 10);
         } else {
             status = true;
@@ -76,12 +60,16 @@ $(function () {
             clearInterval(roulette);
 
             result = bingo[random];
+            
+            // `hit` クラスを正しく適用
+            $number.find("li").eq(result - 1).addClass("hit");
+
+            // 番号を配列から削除
             bingo.splice(random, 1);
 
             $result.text(result);
             $nameDisplay.text(nameList[result] || "該当なし")
                        .toggleClass("empty", !nameList[result]);
-            $number.find("li").eq(parseInt(result, 10) - 1).addClass("hit");
         }
     });
 });
