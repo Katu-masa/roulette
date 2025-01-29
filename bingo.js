@@ -15,16 +15,24 @@ $(function () {
         $sound_play = $("#sound-play"),
         $sound_pause = $("#sound-pause");
 
-    // CSVデータの読み込み
+    // CSVデータの読み込み（修正）
     function loadCSV() {
-        $.get("data.csv", function (data) {
+        return $.ajax({
+            url: "data.csv",
+            dataType: "text"
+        }).done(function (data) {
+            console.log("CSVロード成功"); // デバッグログ
             let lines = data.split("\n");
             for (let line of lines) {
                 let [num, name] = line.split(",");
                 if (num && name) {
-                    nameData[parseInt(num, 10)] = name.trim();
+                    num = parseInt(num.trim(), 10);
+                    nameData[num] = name.trim();
                 }
             }
+            console.log("読み込んだデータ:", nameData); // デバッグログ
+        }).fail(function () {
+            console.error("CSVの読み込みに失敗しました"); // エラーハンドリング
         });
     }
 
@@ -32,7 +40,11 @@ $(function () {
     $("#start-button").on("click", function () {
         $("#start-screen").hide();
         $("#game-screen").show();
-        loadCSV();
+        
+        // CSVのロードが終わるまで待つ
+        loadCSV().then(function () {
+            console.log("ゲーム開始可能"); // デバッグログ
+        });
     });
 
     for (var i = 1; i <= max; i++) {
@@ -67,7 +79,7 @@ $(function () {
             bingo.splice(random, 1);
 
             $result.text(result);
-            $nameDisplay.text(nameData[result] || "該当なし");
+            $nameDisplay.text(nameData[result] || "該当なし"); // 名前表示
             $number.find("li").eq(parseInt(result, 10) - 1).addClass("hit");
         }
     });
