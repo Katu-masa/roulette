@@ -79,7 +79,8 @@ $(function () {
             bingo.splice(random, 1);
 
             $result.text(result);
-            $nameDisplay.text(nameData[result] || "該当なし"); // 名前表示
+            $nameDisplay.text(nameList[result] || "該当なし")
+                       .toggleClass("empty", !nameList[result]);
             $number.find("li").eq(parseInt(result, 10) - 1).addClass("hit");
         }
     });
