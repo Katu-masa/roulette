@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
     <meta charset="UTF-8">
     <title>JavaScriptでビンゴゲームのデモ | てらこや.work</title>
@@ -8,7 +7,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="bingo.js"></script>
 </head>
-
 <body>
     <div id="start-screen" class="start-screen">
         <h1>ビンゴゲーム</h1>
@@ -16,8 +14,10 @@
     </div>
 
     <div id="game-screen" class="wrapper" style="display: none;">
-        <div id="result" class="result"></div>
-        <div id="name-display" class="name-display"></div>
+        <div class="result-wrapper">
+            <div id="result" class="result"></div>
+            <div id="name-display" class="name-display">名前</div>
+        </div>
         <ul id="number" class="number"></ul>
         <div class="wrapper-button">
             <button id="button" class="button">START</button>
@@ -31,5 +31,4 @@
         </audio>
     </div>
 </body>
-
 </html>
