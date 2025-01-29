@@ -30,15 +30,20 @@ body {
     flex-shrink: 0; /* サイズを固定 */
 }
 
-/* 名前表示（左揃えで位置固定） */
+/* 名前表示（左揃えで固定幅） */
 .name-display {
     font-size: 80px;
     font-weight: bold;
     color: #004c8c;
     text-align: left;
-    min-width: 300px; /* 最小幅を確保してずれないように */
-    white-space: nowrap; /* 改行させない */
+    width: 300px; /* 幅を固定 */
+    white-space: nowrap;
     overflow: hidden;
+}
+
+/* 「該当なし」のときもスペースを維持 */
+.name-display.empty {
+    visibility: hidden; /* 文字は非表示だが、スペースは維持 */
 }
 
 @media (max-width: 767px) {
