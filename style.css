@@ -16,7 +16,7 @@ body {
     margin-bottom: 10px;
 }
 
-/* 番号表示（位置固定） */
+/* 番号表示 */
 .result {
     align-items: center;
     border: solid 1px #004c8c;
@@ -27,34 +27,27 @@ body {
     height: 200px;
     text-align: center;
     width: 200px;
-    flex-shrink: 0; /* サイズを固定 */
 }
 
-/* 名前表示（左揃えで固定幅） */
+/* 名前表示を大きく */
 .name-display {
     font-size: 80px;
     font-weight: bold;
     color: #004c8c;
-    text-align: left;
-    width: 300px; /* 幅を固定 */
+    text-align: center;
+    min-width: 250px;
     white-space: nowrap;
-    overflow: hidden;
 }
 
-/* 「該当なし」のときもスペースを維持 */
-.name-display.empty {
-    visibility: hidden; /* 文字は非表示だが、スペースは維持 */
-}
-
+/* スマホ対応: 番号と名前を縦に並べる */
 @media (max-width: 767px) {
     .result-wrapper {
         flex-direction: column;
         gap: 10px;
     }
+
     .name-display {
         font-size: 60px;
-        min-width: auto;
-        text-align: center; /* スマホ時は中央揃え */
     }
 }
 
