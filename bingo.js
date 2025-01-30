@@ -21,7 +21,7 @@ function loadCSV(callback) {
         var lines = data.split("\n");
         lines.forEach(function (line) {
             var parts = line.split(",");
-            if (parts.length === 2) {
+            if (parts.length >= 2) {
                 nameList[parseInt(parts[0], 10)] = parts[1].trim();
             }
         });
