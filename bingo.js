@@ -16,25 +16,37 @@ $(function () {
         $sound_pause = $("#sound-pause");
 
     // CSVデータを読み込む
-    function loadCSV() {
-        $.get("data.csv", function (data) {
-            var lines = data.split("\n");
-            lines.forEach(function (line) {
-                var parts = line.split(",");
-                if (parts.length === 2) {
-                    nameList[parseInt(parts[0], 10)] = parts[1].trim();
-                }
-            });
+function loadCSV(callback) {
+    $.get("data.csv", function (data) {
+        var lines = data.split("\n");
+        lines.forEach(function (line) {
+            var parts = line.split(",");
+            if (parts.length === 2) {
+                nameList[parseInt(parts[0], 10)] = parts[1].trim();
+            }
         });
-    }
+        if (callback) callback();
+    });
+}
 
-    loadCSV();
+loadCSV(initGame);
+
+function initGame() {
+    for (var i = 1; i <= max; i++) {
+        bingo.push(i);
+        $number.append($("<li>").text(("0" + i).slice(-2)));
+    }
+}
 
     for (var i = 1; i <= max; i++) {
         bingo.push(i);
         $number.append($("<li>").text(("0" + i).slice(-2)));
     }
-
+$("#start-button").on("click", function () {
+    $("#start-screen").hide();
+    $("#game-screen").show();
+});
+    
     $("#button").on("click", function () {
         if (status) {
             status = false;
