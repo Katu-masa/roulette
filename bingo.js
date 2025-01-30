@@ -38,10 +38,6 @@ function initGame() {
     }
 }
 
-    for (var i = 1; i <= max; i++) {
-        bingo.push(i);
-        $number.append($("<li>").text(("0" + i).slice(-2)));
-    }
 $("#start-button").on("click", function () {
     $("#start-screen").hide();
     $("#game-screen").show();
