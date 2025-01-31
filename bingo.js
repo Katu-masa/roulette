@@ -1,7 +1,7 @@
 $(function () {
     "use strict";
 
-    var max = 50,
+    var max = 50,  // デフォルト値（CSVの読み込み後に上書きされる）
         bingo = [],
         status = true,
         roulette,
@@ -16,33 +16,44 @@ $(function () {
         $sound_pause = $("#sound-pause");
 
     // CSVデータを読み込む
-function loadCSV(callback) {
-    $.get("data.csv", function (data) {
-        var lines = data.split("\n");
-        lines.forEach(function (line) {
-            var parts = line.split(",");
-            if (parts.length >= 2) {
-                nameList[parseInt(parts[0], 10)] = parts[1].trim();
-            }
+    function loadCSV(callback) {
+        $.get("data.csv", function (data) {
+            var lines = data.trim().split("\n"); // 空行を除く
+            nameList = {}; // 初期化
+
+            lines.forEach(function (line) {
+                var parts = line.split(",");
+                if (parts.length >= 2) {
+                    var key = parseInt(parts[0], 10);
+                    nameList[key] = parts[1].trim();
+                }
+            });
+
+            max = Object.keys(nameList).length; // 名前の数に応じて max を設定
+
+            if (callback) callback();
         });
-        if (callback) callback();
-    });
-}
-
-loadCSV(initGame);
-
-function initGame() {
-    for (var i = 1; i <= max; i++) {
-        bingo.push(i);
-        $number.append($("<li>").text(("0" + i).slice(-2)));
     }
-}
 
-$("#start-button").on("click", function () {
-    $("#start-screen").hide();
-    $("#game-screen").show();
-});
-    
+    // ゲームを初期化
+    function initGame() {
+        bingo = []; // 初期化
+        $number.empty(); // 既存のリストをクリア
+
+        for (var i = 1; i <= max; i++) {
+            bingo.push(i);
+            $number.append($("<li>").text(("0" + i).slice(-2)));
+        }
+    }
+
+    // CSVを読み込んでからゲームを開始
+    loadCSV(initGame);
+
+    $("#start-button").on("click", function () {
+        $("#start-screen").hide();
+        $("#game-screen").show();
+    });
+
     $("#button").on("click", function () {
         if (status) {
             status = false;
@@ -68,7 +79,7 @@ $("#start-button").on("click", function () {
             clearInterval(roulette);
 
             result = bingo[random];
-            
+
             // `hit` クラスを正しく適用
             $number.find("li").eq(result - 1).addClass("hit");
 
