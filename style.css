@@ -36,9 +36,10 @@ body {
     font-weight: bold;
     color: #004c8c;
     text-align: left;
-    width: 300px; /* 幅を固定 */
-    white-space: nowrap;
-    overflow: hidden;
+    width: auto; /* 幅を可変に */
+    max-width: 600px; /* 必要に応じて制限 */
+    white-space: normal;
+    overflow-wrap: break-word;
 }
 
 .name-display.empty {
