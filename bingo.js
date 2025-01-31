@@ -1,6 +1,5 @@
 $(function () {
     "use strict";
-
     var max = 50,  // デフォルト値（選択したクラスで上書きされる）
         bingo = [],
         status = true,
